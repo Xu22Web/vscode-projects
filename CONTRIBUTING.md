@@ -56,6 +56,14 @@
 
    # 测试编译
    python -m PyInstaller vscode-projects.spec
+
+   # 或使用构建脚本
+   # Windows
+   build.bat
+
+   # macOS/Linux
+   chmod +x build.sh
+   ./build.sh
    ```
 
 5. **提交更改**
@@ -123,6 +131,63 @@ def complex_function(param1, param2):
 
 ## 🧪 测试
 
+### 构建测试
+
+在提交涉及构建的更改前，请测试所有构建脚本：
+
+#### Windows 构建测试
+```batch
+# 测试 build.bat
+build.bat
+
+# 验证输出
+dir dist\windows\vscode-projects.exe
+
+# 测试可执行文件
+dist\windows\vscode-projects.exe -h
+dist\windows\vscode-projects.exe -l
+```
+
+#### macOS/Linux 构建测试
+```bash
+# 测试 build.sh
+chmod +x build.sh
+./build.sh
+
+# 验证输出
+ls -lh dist/macos/vscode-projects   # macOS
+ls -lh dist/linux/vscode-projects   # Linux
+
+# 测试可执行文件
+./dist/macos/vscode-projects -h     # macOS
+./dist/linux/vscode-projects -l     # Linux
+```
+
+#### 多平台构建测试
+```bash
+# 测试 build-all.sh
+chmod +x build-all.sh
+./build-all.sh
+
+# 验证发布包
+ls -lh dist/releases/
+```
+
+#### Spec 文件修改测试
+
+如果修改了 `vscode-projects.spec`：
+
+```bash
+# 清理旧构建
+rm -rf build dist
+
+# 使用 spec 文件构建
+pyinstaller vscode-projects.spec
+
+# 测试可执行文件
+./dist/vscode-projects -h
+```
+
 ### 手动测试清单
 
 在提交 PR 前，请确保测试：
@@ -157,10 +222,39 @@ def complex_function(param1, param2):
 
 如果你的更改影响用户使用，请更新：
 
-- [ ] README.md
-- [ ] USAGE.md
-- [ ] 代码注释
-- [ ] CHANGELOG（如适用）
+- [ ] README.md - 主要文档和功能介绍
+- [ ] BUILD.md - 构建相关的更改
+- [ ] QUICKSTART.md - 快速开始指南
+- [ ] USAGE.md - 使用说明
+- [ ] CONTRIBUTING.md - 贡献指南（本文档）
+- [ ] 代码注释 - 重要的代码说明
+- [ ] CHANGELOG.md - 版本更改记录（如适用）
+
+### 文档编写规范
+
+- 使用清晰的标题和章节
+- 提供代码示例
+- 包含截图（如适用）
+- 保持格式一致
+- 使用正确的 Markdown 语法
+
+### 构建文档更新指南
+
+当修改构建相关内容时，需要更新：
+
+1. **BUILD.md** - 如果改变了：
+   - 构建脚本
+   - 构建参数
+   - 输出路径
+   - 构建流程
+
+2. **QUICKSTART.md** - 如果改变了：
+   - 编译步骤
+   - 快速开始流程
+
+3. **README.md** - 如果改变了：
+   - 安装方法
+   - 基本使用方式
 
 ## 🔍 Pull Request 检查清单
 

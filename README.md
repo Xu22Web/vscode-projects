@@ -53,28 +53,63 @@ python vscode-projects.py
 
 ### 方式二：编译为可执行文件
 
+**详细构建指南请参阅 [BUILD.md](BUILD.md)**
+
 #### Windows
 
 ```batch
 # 运行编译脚本
 build.bat
 
-# 编译完成后，可执行文件位于 dist/ 目录
-dist\vscode-projects.exe
+# 编译完成后，可执行文件位于 dist/windows/ 目录
+dist\windows\vscode-projects.exe
+
+# 或者手动编译
+pip install pyinstaller
+pyinstaller --onefile --console --name vscode-projects vscode-projects.py
 ```
 
 #### macOS / Linux
 
 ```bash
-# 安装 PyInstaller
+# 添加执行权限
+chmod +x build.sh
+
+# 运行编译脚本
+./build.sh
+
+# 编译完成后运行
+./dist/macos/vscode-projects  # macOS
+./dist/linux/vscode-projects  # Linux
+
+# 或者手动编译
 pip install pyinstaller
-
-# 编译
 pyinstaller --onefile --console --name vscode-projects vscode-projects.py
-
-# 运行
 ./dist/vscode-projects
 ```
+
+#### 多平台发布包
+
+```bash
+# 使用多平台构建脚本
+chmod +x build-all.sh
+./build-all.sh
+
+# 生成的发布包位于 dist/releases/
+# - vscode-projects-1.0.0-windows-x64.zip
+# - vscode-projects-1.0.0-macos-x64.tar.gz
+# - vscode-projects-1.0.0-linux-x64.tar.gz
+```
+
+### 方式三：下载预编译版本
+
+从 [Releases](https://github.com/Xu22Web/vscode-projects/releases) 页面下载最新版本：
+
+- Windows: `vscode-projects-x.x.x-windows-x64.zip`
+- macOS: `vscode-projects-x.x.x-macos-x64.tar.gz`
+- Linux: `vscode-projects-x.x.x-linux-x64.tar.gz`
+
+下载后解压即可使用，无需安装 Python 环境。
 
 ## 🚀 使用方法
 
@@ -211,16 +246,37 @@ vscode-projects --db "/custom/path/state.vscdb" --code "code-insiders"
 
 ## 🔧 系统要求
 
-- **Python**: 3.11 或更高版本（运行源码时）
+### 运行源码时
+
+- **Python**: 3.11 或更高版本
+- **pip**: Python 包管理器
 - **操作系统**:
   - Windows 10/11
   - macOS 10.14+
   - Linux（任何主流发行版）
   - WSL 1/2
+
+### 使用预编译版本时
+
+- **无需 Python 环境**
+- **操作系统**:
+  - Windows 10/11（64位）
+  - macOS 10.14+（64位）
+  - Linux（64位，GLIBC 2.27+）
 - **终端**: 支持 ANSI 颜色的现代终端
   - Windows Terminal（推荐）
+  - PowerShell 7+
   - iTerm2 / Terminal.app（macOS）
   - GNOME Terminal / Konsole（Linux）
+
+### 构建可执行文件时
+
+- **Python**: 3.11 或更高版本
+- **PyInstaller**: 自动安装
+- **磁盘空间**: 至少 500 MB
+- **内存**: 建议 2 GB 以上
+
+详细的构建要求和说明请参阅 [BUILD.md](BUILD.md)
 
 ## 🎯 应用场景
 
@@ -234,11 +290,34 @@ vscode-projects --db "/custom/path/state.vscdb" --code "code-insiders"
 
 欢迎提交 Issue 和 Pull Request！
 
+详细的贡献指南请参阅 [CONTRIBUTING.md](CONTRIBUTING.md)
+
+### 快速开始贡献
+
 1. Fork 本项目
 2. 创建特性分支 (`git checkout -b feature/AmazingFeature`)
 3. 提交更改 (`git commit -m 'Add some AmazingFeature'`)
 4. 推送到分支 (`git push origin feature/AmazingFeature`)
 5. 开启 Pull Request
+
+### 贡献类型
+
+- 🐛 报告 Bug
+- 💡 提出新功能建议
+- 📝 改进文档
+- 🔨 提交代码修复
+- 🌐 添加国际化支持
+- 🧪 编写测试
+- 🏗️ 改进构建脚本
+
+### 文档结构
+
+- [README.md](README.md) - 项目主文档
+- [BUILD.md](BUILD.md) - 构建指南
+- [QUICKSTART.md](QUICKSTART.md) - 快速开始
+- [USAGE.md](USAGE.md) - 详细使用说明
+- [CONTRIBUTING.md](CONTRIBUTING.md) - 贡献指南
+- [CHANGELOG.md](CHANGELOG.md) - 更新日志
 
 ## 📄 许可证
 

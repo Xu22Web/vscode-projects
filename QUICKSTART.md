@@ -23,15 +23,45 @@ python vscode-projects.py
 
 **Windows:**
 ```batch
+# 使用构建脚本（推荐）
 build.bat
+
+# 运行
+dist\windows\vscode-projects.exe
+
+# 或者手动构建
+pip install pyinstaller
+pyinstaller --onefile --console --name vscode-projects vscode-projects.py
 dist\vscode-projects.exe
 ```
 
 **macOS/Linux:**
 ```bash
+# 使用构建脚本（推荐）
+chmod +x build.sh
+./build.sh
+
+# 运行
+./dist/macos/vscode-projects  # macOS
+./dist/linux/vscode-projects  # Linux
+
+# 或者手动构建
 pip install pyinstaller
-pyinstaller --onefile --console vscode-projects.py
+pyinstaller --onefile --console --name vscode-projects vscode-projects.py
 ./dist/vscode-projects
+```
+
+**多平台构建（适用于发布）:**
+```bash
+# 使用多平台构建脚本
+chmod +x build-all.sh
+./build-all.sh
+
+# 输出发布包
+ls dist/releases/
+# vscode-projects-1.0.0-windows-x64.zip
+# vscode-projects-1.0.0-macos-x64.tar.gz
+# vscode-projects-1.0.0-linux-x64.tar.gz
 ```
 
 ### 步骤 3: 使用程序
@@ -87,7 +117,101 @@ pyinstaller --onefile --console vscode-projects.py
 | `/` | 搜索 |
 | `q` | 退出 |
 
-## 📋 命令行使用
+## � 不同环境的安装
+
+### 场景 1: 快速体验（无需安装）
+
+如果你只是想快速体验，直接下载编译好的可执行文件：
+
+1. 访问 [Releases](https://github.com/Xu22Web/vscode-projects/releases)
+2. 下载对应平台的文件
+3. 解压并运行
+
+```bash
+# Windows
+vscode-projects.exe
+
+# macOS/Linux
+chmod +x vscode-projects
+./vscode-projects
+```
+
+### 场景 2: 开发环境（从源码运行）
+
+如果你是开发者或想自定义代码：
+
+```bash
+# 1. 克隆项目
+git clone https://github.com/Xu22Web/vscode-projects.git
+cd vscode-projects
+
+# 2. 创建虚拟环境（可选，但推荐）
+python -m venv venv
+
+# 激活虚拟环境
+# Windows
+venv\Scripts\activate
+# macOS/Linux
+source venv/bin/activate
+
+# 3. 直接运行
+python vscode-projects.py
+```
+
+### 场景 3: 生产环境（编译部署）
+
+如果你需要在多台机器上部署：
+
+```bash
+# 1. 克隆项目
+git clone https://github.com/Xu22Web/vscode-projects.git
+cd vscode-projects
+
+# 2. 构建可执行文件
+# Windows
+build.bat
+
+# macOS/Linux
+chmod +x build.sh
+./build.sh
+
+# 3. 分发可执行文件
+# Windows: dist\windows\vscode-projects.exe
+# macOS: dist/macos/vscode-projects
+# Linux: dist/linux/vscode-projects
+```
+
+### 场景 4: Docker 环境
+
+如果你需要在 Docker 中运行：
+
+```dockerfile
+# Dockerfile
+FROM python:3.11-slim
+
+WORKDIR /app
+COPY vscode-projects.py .
+
+# 安装系统依赖（如需要）
+RUN apt-get update && apt-get install -y \
+    xclip \
+    && rm -rf /var/lib/apt/lists/*
+
+# 运行
+CMD ["python", "vscode-projects.py"]
+```
+
+```bash
+# 构建镜像
+docker build -t vscode-projects .
+
+# 运行
+docker run -it --rm \
+  -v ~/.config/Code:/root/.config/Code:ro \
+  vscode-projects
+```
+
+## �📋 命令行使用
 
 ```bash
 # 交互模式（默认）

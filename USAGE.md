@@ -4,6 +4,48 @@
 
 ## 快速开始
 
+### 运行方式选择
+
+#### 方式 1: 使用预编译可执行文件（推荐）
+
+最简单的使用方式，无需安装 Python：
+
+```bash
+# Windows
+vscode-projects.exe
+
+# macOS
+./vscode-projects
+
+# Linux
+./vscode-projects
+```
+
+#### 方式 2: 从源码运行
+
+适合开发者或需要自定义的情况：
+
+```bash
+# 确保已安装 Python 3.11+
+python vscode-projects.py
+
+# 或
+python3 vscode-projects.py
+```
+
+#### 方式 3: 自行编译
+
+从源码编译为可执行文件，详见 [BUILD.md](BUILD.md)：
+
+```bash
+# Windows
+build.bat
+
+# macOS/Linux
+chmod +x build.sh
+./build.sh
+```
+
 ### 1. 基本使用
 
 启动程序进入交互模式：
@@ -158,20 +200,63 @@ python vscode-projects.py \
 
 ### 1. 创建快捷命令（Windows）
 
-将可执行文件添加到 PATH：
+#### 使用预编译版本
 
 ```batch
+# 方法 1: 添加到 PATH
 # 复制到用户目录
-copy vscode-projects.exe %USERPROFILE%\
+copy vscode-projects.exe %USERPROFILE%\bin\
 
-# 或者添加到 System32（需要管理员权限）
+# 将 %USERPROFILE%\bin 添加到系统 PATH
+# 设置 -> 系统 -> 关于 -> 高级系统设置 -> 环境变量
+
+# 方法 2: 复制到 System32（需要管理员权限）
 copy vscode-projects.exe C:\Windows\System32\
 
-# 创建别名（PowerShell）
-Set-Alias -Name vsp -Value vscode-projects
+# 方法 3: 创建别名（PowerShell 配置文件）
+# 编辑 $PROFILE
+notepad $PROFILE
+
+# 添加以下内容
+function vsp {
+    & "D:\path\to\vscode-projects.exe" $args
+}
+```
+
+#### 使用源码版本
+
+```batch
+# PowerShell 配置文件
+Set-Alias -Name vsp -Value "python D:\path\to\vscode-projects.py"
+
+# 或创建 bat 脚本 (vsp.bat)
+@echo off
+python D:\path\to\vscode-projects.py %*
 ```
 
 ### 2. 创建快捷命令（Linux/macOS）
+
+#### 使用预编译版本
+
+```bash
+# 方法 1: 安装到 /usr/local/bin
+sudo cp vscode-projects /usr/local/bin/
+sudo chmod +x /usr/local/bin/vscode-projects
+
+# 方法 2: 创建符号链接
+sudo ln -s $(pwd)/vscode-projects /usr/local/bin/vsp
+
+# 方法 3: 添加别名到 shell 配置
+# 对于 Bash
+echo 'alias vsp="/path/to/vscode-projects"' >> ~/.bashrc
+source ~/.bashrc
+
+# 对于 Zsh
+echo 'alias vsp="/path/to/vscode-projects"' >> ~/.zshrc
+source ~/.zshrc
+```
+
+#### 使用源码版本
 
 ```bash
 # 复制到 /usr/local/bin
@@ -181,7 +266,7 @@ sudo cp vscode-projects /usr/local/bin/
 sudo ln -s $(pwd)/vscode-projects /usr/local/bin/vsp
 
 # 添加别名到 ~/.bashrc 或 ~/.zshrc
-echo 'alias vsp="vscode-projects"' >> ~/.bashrc
+echo 'alias vsp="python /path/to/vscode-projects.py"' >> ~/.bashrc
 source ~/.bashrc
 ```
 
@@ -328,6 +413,68 @@ chcp 65001
   - macOS: iTerm2
   - Linux: 最新版 GNOME Terminal
 
+### 问题 6：可执行文件无法运行（Windows）
+
+**症状：**双击 exe 文件没有反应或闪退
+
+**解决方案：**
+```batch
+# 从命令行运行，查看错误信息
+cd dist\windows
+vscode-projects.exe
+
+# 或者
+.\vscode-projects.exe --help
+```
+
+**可能原因：**
+- 缺少运行时库：安装 Visual C++ Redistributable
+- 被杀毒软件拦截：添加到白名单
+- 权限问题：右键→以管理员身份运行
+
+### 问题 7：macOS 无法打开可执行文件
+
+**症状：**提示"无法验证开发者"或"文件已损坏"
+
+**解决方案：**
+```bash
+# 移除隔离属性
+xattr -cr vscode-projects
+
+# 或在系统偏好设置中允许
+# 系统偏好设置 -> 安全性与隐私 -> 通用 -> 仍要打开
+```
+
+### 问题 8：Linux 可执行文件权限问题
+
+**症状：**Permission denied
+
+**解决方案：**
+```bash
+# 添加执行权限
+chmod +x vscode-projects
+
+# 验证权限
+ls -l vscode-projects
+```
+
+### 问题 9：编译后文件太大
+
+**症状：**可执行文件超过 20MB
+
+**优化方案：**
+```bash
+# 使用虚拟环境重新编译
+python -m venv build_env
+source build_env/bin/activate  # Linux/macOS
+build_env\Scripts\activate      # Windows
+
+pip install pyinstaller
+pyinstaller vscode-projects.spec
+```
+
+详见 [BUILD.md](BUILD.md) 的优化章节。
+
 ## 性能优化
 
 ### 处理大量项目
@@ -413,7 +560,41 @@ python ~/vscode-projects.py
 
 - [GitHub 仓库](https://github.com/Xu22Web/vscode-projects)
 - [问题反馈](https://github.com/Xu22Web/vscode-projects/issues)
+- [构建指南](BUILD.md) - 如何编译可执行文件
+- [快速开始](QUICKSTART.md) - 5分钟上手指南
+- [贡献指南](CONTRIBUTING.md) - 参与项目开发
 - [VSCode 官方文档](https://code.visualstudio.com/docs)
+
+## 常见使用场景总结
+
+### 场景 1: 个人开发者
+```bash
+# 下载预编译版本，直接使用
+vscode-projects.exe  # Windows
+./vscode-projects    # macOS/Linux
+```
+
+### 场景 2: 团队协作
+```bash
+# 从源码运行，便于自定义
+git clone https://github.com/Xu22Web/vscode-projects.git
+cd vscode-projects
+python vscode-projects.py
+```
+
+### 场景 3: 企业部署
+```bash
+# 编译为可执行文件，统一分发
+./build-all.sh  # 在各平台上构建
+# 分发 dist/ 目录下的文件
+```
+
+### 场景 4: CI/CD 集成
+```bash
+# 在自动化脚本中使用
+vscode-projects --list > projects.txt
+# 或者配合其他工具处理
+```
 
 ---
 
